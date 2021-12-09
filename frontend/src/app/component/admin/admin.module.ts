@@ -13,12 +13,18 @@ import { EditFormComponent } from './admin-movie/edit/edit-form/edit-form.compon
 // import { AdminRoutingModule } from './admin-routing.module';
 import { Routes, RouterModule } from '@angular/router';
 import { ShareModule } from '../../share/share.module';
-import { AuthGuard } from 'src/app/guard/auth.guard';
+import { AdminGuard } from 'src/app/guard/admin.guard';
 
 export const routes: Routes = [
-    { path: '', component: AdminComponent, canActivate: [AuthGuard] },
-    { path: 'create', component: CreateComponent, canActivate: [AuthGuard] },
-    { path: 'edit/:id', component: EditComponent, canActivate: [AuthGuard] },
+    {
+        path: "",
+        canActivateChild: [AdminGuard],
+        children: [
+            { path: '', component: AdminComponent },
+            { path: 'create', component: CreateComponent },
+            { path: 'edit/:id', component: EditComponent },
+        ]
+    }
 ];
 
 @NgModule({
@@ -34,8 +40,8 @@ export const routes: Routes = [
         EditFormComponent,
     ],
     imports: [
-        ShareModule,
-        RouterModule.forChild(routes),
+    ShareModule,
+    RouterModule.forChild(routes),
     ],
     providers: [
 

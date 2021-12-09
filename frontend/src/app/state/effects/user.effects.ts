@@ -16,7 +16,6 @@ export class UserEffects {
     userInfor$ = createEffect(() =>
         // Observerable
         this.actions$.
-            //     // Tiền xử lý
             pipe(
                 ofType(userActions.getUserFromToken),
                 exhaustMap(() =>
@@ -27,5 +26,19 @@ export class UserEffects {
                 )
             )
     );
+
+    //     userLogin$ = createEffect(() =>
+    //     // Observerable
+    //     this.actions$.
+    //         pipe(
+    //             ofType(userActions.login),
+    //             exhaustMap((action) =>
+    //                 this.dataService.().pipe(
+    //                     map(response => userActions.getUserFromTokenSuccess(response)),  //gọi đến hành động login success
+    //                     catchError((error: any) => of(userActions.getUserFromTokenFailure(error)))
+    //                 ) //gọi đến hành động login fail
+    //             )
+    //         )
+    // );
 
 }

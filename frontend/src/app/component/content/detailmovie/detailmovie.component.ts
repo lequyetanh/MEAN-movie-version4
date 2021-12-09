@@ -4,7 +4,10 @@ import { MovieService } from "../../../service/movie.service";
 import { DataService } from "../../../service/data.service";
 import { AuthService } from "../../../service/auth.service";
 import { StateService } from "../../../service/state.service";
-
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import * as appSelector from './../../../state/selectors/app.selectors';
+import * as ApplicationAction from './../../../state/actions/app.actions';
 @Component({
     selector: "app-detailmovie",
     templateUrl: "./detailmovie.component.html",
@@ -41,6 +44,8 @@ export class DetailmovieComponent implements OnInit {
     }];
     indexStandard = [[0, 1.5], [2, 3.5], [4, 5.5], [6, 7.5], [8, 9.5]]
     currentUrl;
+
+    movieFromId$: Observable<any>
     constructor(
         private router: Router,
         private route: ActivatedRoute,
@@ -48,6 +53,7 @@ export class DetailmovieComponent implements OnInit {
         private dataService: DataService,
         public authService: AuthService,
         private stateService: StateService,
+        private store: Store,
     ) {
         this.dataService.getUser().subscribe(loggedIn => {
             this.loggedIn = loggedIn['loggedIn'];
@@ -59,10 +65,9 @@ export class DetailmovieComponent implements OnInit {
 
             }
         });
-
-        // this.user = this.stateService.user;
-        console.log(this.user)
         window.scrollTo({ left: 0, top: 0 });
+
+        // this.movieFromId$ = this.store.select(appSelector.movieFromId)
     }
 
 
@@ -75,6 +80,7 @@ export class DetailmovieComponent implements OnInit {
             // console.log(this.router.url);
             this.currentUrl = "https://lequyetanh.github.io" + this.router.url;
             this.id = paramMap.get('id');
+            this.store.dispatch(ApplicationAction.getMovieFromId({id: this.id}));
             this.movies = [];
             this.movieService.getMovieFromId(this.id).subscribe((movie) => {
                 this.movie = movie;

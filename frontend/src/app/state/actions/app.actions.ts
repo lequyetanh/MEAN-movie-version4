@@ -49,12 +49,11 @@ export const getAllCategoryFailure = createAction(
 
 export const getAllCountry = createAction(
     GET_ALL_COUNTRY,
-    props<{ user: User }>()
 );
 
 export const getAllCountrySuccess = createAction(
     GET_ALL_COUNTRY_SUCCESS,
-    props<any>()
+    props<{country: any}>()
 )
 
 export const getAllCountryFailure = createAction(
@@ -64,12 +63,12 @@ export const getAllCountryFailure = createAction(
 
 export const getMovieFromId = createAction(
     GET_MOVIE_FROM_ID,
-    props<{ user: User }>()
+    props<{ id: number }>()
 );
 
 export const getMovieFromIdSuccess = createAction(
     GET_MOVIE_FROM_ID_SUCCESS,
-    props<any>()
+    props<{movie: any}>()
 )
 
 export const getMovieFromIdFailure = createAction(

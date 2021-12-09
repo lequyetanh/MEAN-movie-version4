@@ -6,7 +6,11 @@ import * as fromApp from './reducers/app.reducers';
 
 @NgModule({
     imports: [
-        StoreModule.forFeature(fromApp.categoryFeatureKey, fromApp.reducer),
+        StoreModule.forFeature(fromApp.categoryFeatureKey, fromApp.categoryReducer),
+        StoreModule.forFeature(fromApp.countryFeatureKey, fromApp.countryReducer),
+        StoreModule.forFeature(fromApp.getAllMovieFeatureKey, fromApp.AllMovieReducer),
+        StoreModule.forFeature(fromApp.getMovieFromIdFeatureKey, fromApp.MovieFromIdReducer),
+        StoreModule.forFeature(fromApp.applicationSettingFeatureKey, fromApp.ApplicationSettingReducer),
         EffectsModule.forFeature([AppEffects])
     ]
 })

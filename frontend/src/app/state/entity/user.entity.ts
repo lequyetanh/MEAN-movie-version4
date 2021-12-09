@@ -1,4 +1,4 @@
-export interface User{
+export interface User {
     id: number;
     name: string;
     email: string;
@@ -8,5 +8,4 @@ export interface User{
     watchLater: Array<Object>;
     favorite: Array<Object>;
     avatar: string;
-  }
-  
+}

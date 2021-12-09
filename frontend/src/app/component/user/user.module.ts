@@ -11,35 +11,22 @@ import { ShareModule } from '../../share/share.module';
 import { AuthGuard } from 'src/app/guard/auth.guard';
 
 export const routes: Routes = [
-
     {
-        path: 'profile', component: ProfileComponent,
-        canActivateChild: [AuthGuard]
-    },
-    {
-        path: 'donate', component: DonateComponent,
-        canActivateChild: [AuthGuard]
-    },
-    {
-        path: 'collection', component: CollectionComponent,
-        canActivateChild: [AuthGuard]
-    },
-
-    // {
-    //     path: "",
-    //     canActivateChild: [AuthGuard],
-    //     children: [
-    //         {
-    //             path: 'profile', component: ProfileComponent,
-    //         },
-    //         {
-    //             path: 'donate', component: DonateComponent,
-    //         },
-    //         {
-    //             path: 'collection', component: CollectionComponent,
-    //         },
-    //     ]
-    // }
+        path: "",
+        canActivateChild: [AuthGuard],
+        canLoad: [AuthGuard],
+        children: [
+            {
+                path: 'profile', component: ProfileComponent,
+            },
+            {
+                path: 'donate', component: DonateComponent,
+            },
+            {
+                path: 'collection', component: CollectionComponent,
+            },
+        ]
+    }
 ];
 
 @NgModule({

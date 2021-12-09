@@ -18,6 +18,8 @@ import { getUserFromToken, getUserFromTokenFailure } from './../../state/actions
 import { getAllCategory } from 'src/app/state/actions/app.actions';
 
 import * as appSelector from './../../state/selectors/app.selectors';
+import * as userSelector from './../../state/selectors/user.selectors';
+import { getAllCountry } from './../../state/actions/app.actions';
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
@@ -36,19 +38,18 @@ export class HeaderComponent implements OnInit {
     interval: any;
     fixHeader: boolean = false;
 
-    Country: Country[];
     movieName: any;
-    Category: Category[];
     statusFormLogin: boolean = false;
     statusFormUser: boolean = false;
     statusSideNav: boolean = false;
     phimle: Movie[];
 
     toggleForm: boolean;
+
     userInfor$: Observable<any>;
-
-    category$: Observable<any>
-
+    category$: Observable<Category>
+    country$: Observable<Country>
+    userName$: Observable<String>
 
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
@@ -63,21 +64,17 @@ export class HeaderComponent implements OnInit {
         private store: Store,
     ) {
 
-        this.dataService.getUser().subscribe((loggedIn) => {
-            // console.log(loggedIn);
-            this.loggedIn = loggedIn['loggedIn'];
-            if (this.loggedIn) {
-                this.userName = loggedIn['loggedIn'];
-                this.avatar = loggedIn['user'].avatar;
-            }
-        });
-
         this.store.dispatch(getUserFromToken());
         this.store.dispatch(getAllCategory());
-        // this.store.dispatch(getUserFromTokenFailure({message: "bitch"}));
+        this.store.dispatch(getAllCountry());
 
+        this.userInfor$ = this.store.select(userSelector.userInfor)
         this.category$ = this.store.select(appSelector.allCategory)
-        // this.category$.subscribe(console.log)
+        this.country$ = this.store.select(appSelector.allCountry)
+
+        this.userInfor$ = this.store.select(userSelector.userInfor)
+        this.userName$ = this.userInfor$['name']
+        console.log(this.userName$)
     }
 
     get10Moviele(): void {
@@ -143,35 +140,8 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.dataService.getUser().subscribe((loggedIn) => {
-            // console.log(loggedIn);
-            if (loggedIn['loggedIn']) {
-                
-                this.stateService.updateUserInformation(loggedIn['user']);
-                // this.stateService.user = loggedIn['user'];
-                // this.stateService.userName = loggedIn['loggedIn'];
-            }
-        });
-
-        this.authService.loggedIn.subscribe(loggedIn => {
-            if (loggedIn) {
-                this.avatar = loggedIn;
-                // alert('Avatar Updated Successfully!')
-            }
-        });
-
-        this.stateService.formSearch.subscribe(formSearch => {
-            this.toggleForm = formSearch;
-            // console.log(formSearch)
-        });
-        this.stateService.accountLogined.subscribe(statusFormUser => {
-            this.statusFormUser = statusFormUser;
-        });
-
         this.get10Moviele();
         this.toggle = false;
-        this.getCategoryFromServer();
-        this.getCountryFromServer();
         this.getAllMovie();
     }
 
@@ -212,25 +182,6 @@ export class HeaderComponent implements OnInit {
             this.toggle = true;
         }
     }
-
-    getCategoryFromServer(): void {
-        this.movieService.getCategory().subscribe(
-            (updateCategory) => {
-                // console.log(updateCategory);
-                this.Category = updateCategory;
-                // console.log(this.Category)
-                this.stateService.updateCategory(updateCategory);
-            }
-        )
-    }
-    getCountryFromServer(): void {
-        this.movieService.getCountry().subscribe(
-            (updateCountry) => {
-                this.Country = updateCountry;
-            }
-        )
-    }
-
 
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();

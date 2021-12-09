@@ -91,6 +91,7 @@ import { Cloudinary } from 'cloudinary-core';
 import { ShareModule } from './share/share.module';
 
 import { AuthGuard } from './guard/auth.guard';
+import { AdminGuard } from './guard/admin.guard';
 
 import { FileUploadModule } from 'ng2-file-upload';
 import { StoreModule } from '@ngrx/store';
@@ -204,7 +205,8 @@ import { ApplicationModule } from './state/application.module'
         AngularFireAuth,
         TranslateService,
         TranslateStore,
-        AuthGuard
+        AuthGuard,
+        AdminGuard
     ],
     bootstrap: [AppComponent]
 })

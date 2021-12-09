@@ -8,13 +8,14 @@ import { WatchmovieComponent } from './component/content/watchmovie/watchmovie.c
 import { NotFoundComponent } from './component/content/not-found/not-found.component';
 
 import { AuthGuard } from './guard/auth.guard';
+import { AdminGuard } from './guard/admin.guard';
 
 const routes: Routes = [
     { path: '', redirectTo: '/movie', pathMatch: 'full' },
     {
         path: 'movie', component: IndexComponent,
     },
-    { path: 'detailmovie/:id', component: DetailmovieComponent,canActivate: [AuthGuard], },
+    { path: 'detailmovie/:id', component: DetailmovieComponent },
     { path: 'watchmovie/:id', component: WatchmovieComponent },
     {
         path: 'filter',
@@ -39,7 +40,7 @@ const routes: Routes = [
     },
     {
         path: 'admin',
-        canActivate: [AuthGuard],
+        canActivate: [AdminGuard],
         loadChildren: () => import('./component/admin/admin.module').then(m => m.AdminModule),
     },
     { path: '**', component: NotFoundComponent },

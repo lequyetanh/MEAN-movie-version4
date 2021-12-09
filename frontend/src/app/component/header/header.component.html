@@ -18,7 +18,7 @@
                         <li class="header__nav-item">
                             Quốc Gia
                             <ul class="header__nav-item-list">
-                                <li *ngFor="let country of Country">
+                                <li *ngFor="let country of country$ | async">
                                     <a routerLink="/movietype/{{country.name}}">{{country.name}}</a>
                                 </li>
                             </ul>
@@ -83,18 +83,19 @@
                         </a>
                     </div>
                     <div class="header__auth-noti"><i class="fas fa-bell"></i></div>
-                    <div class="header__auth-user" *ngIf="!userName" (click)="FormLogin()">
+
+                    <div class="header__auth-user" *ngIf="!(userInfor$ | async)" (click)="FormLogin()">
                         <div class="loggin flexbox-center-center">Loggin</div>
                     </div>
 
-                    <div class="header__auth-user relative" *ngIf="userName">
+                    <div class="header__auth-user relative" *ngIf="(userInfor$ | async)">
                         <div mat-raised-button class="loggin" (click)="formUser()">
-                            <img class="avatar" src="{{avatar}}">
-                            {{userName}}
+                            <img class="avatar" src="{{(userInfor$ | async).avatar}}">
+                            {{(userInfor$ | async).name}}
                         </div>
                         <div class="account" *ngIf="statusFormUser">
                             <div class="flexbox-center-center">
-                                <a class="profile" *ngIf="userName == 'Lê Quyết Anh'" (click)="formUser()"
+                                <a class="profile" *ngIf="(userInfor$ | async).name == 'Lê Quyết Anh'" (click)="formUser()"
                                     routerLink="/admin">
                                     <i class="fas fa-user-shield"></i>Admin
                                 </a>

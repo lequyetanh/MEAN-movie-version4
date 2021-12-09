@@ -101,6 +101,7 @@ export class MovieService {
     }
 
     getMovieFromId(id: number): Observable<Movie[]> {
+        console.log(id)
         return this.http.get<Movie[]>(`${this.moviesURL}/detailmovie/${id}`);
     }
 
