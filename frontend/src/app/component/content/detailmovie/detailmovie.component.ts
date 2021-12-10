@@ -5,9 +5,13 @@ import { DataService } from "../../../service/data.service";
 import { AuthService } from "../../../service/auth.service";
 import { StateService } from "../../../service/state.service";
 import { Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
 import * as appSelector from './../../../state/selectors/app.selectors';
 import * as ApplicationAction from './../../../state/actions/app.actions';
+
+import * as userSelector from './../../../state/selectors/user.selectors';
+import { Subject } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { mergeMap, takeUntil, map, mergeAll } from 'rxjs/operators';
 @Component({
     selector: "app-detailmovie",
     templateUrl: "./detailmovie.component.html",
@@ -44,6 +48,7 @@ export class DetailmovieComponent implements OnInit {
     }];
     indexStandard = [[0, 1.5], [2, 3.5], [4, 5.5], [6, 7.5], [8, 9.5]]
     currentUrl;
+    destroy$: Subject<boolean> = new Subject<boolean>();
 
     movieFromId$: Observable<any>
     constructor(
@@ -55,19 +60,13 @@ export class DetailmovieComponent implements OnInit {
         private stateService: StateService,
         private store: Store,
     ) {
-        this.dataService.getUser().subscribe(loggedIn => {
-            this.loggedIn = loggedIn['loggedIn'];
-            if (loggedIn['loggedIn']) {
-                this.user = loggedIn['user'];
-                // console.log(this.user);
-                this.getFavorite();
-            } else {
-
-            }
+        this.store.select(userSelector.userInfor).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(data => {
+            this.user = data;
+            this.getFavorite();
         });
         window.scrollTo({ left: 0, top: 0 });
-
-        // this.movieFromId$ = this.store.select(appSelector.movieFromId)
     }
 
 
@@ -75,44 +74,28 @@ export class DetailmovieComponent implements OnInit {
         this.movieDetail();
     }
 
+    ngOnDestroy() {
+        this.destroy$.unsubscribe();
+    }
+
     movieDetail(): void {
-        this.route.paramMap.subscribe(paramMap => {
-            // console.log(this.router.url);
-            this.currentUrl = "https://lequyetanh.github.io" + this.router.url;
-            this.id = paramMap.get('id');
-            this.store.dispatch(ApplicationAction.getMovieFromId({id: this.id}));
-            this.movies = [];
-            this.movieService.getMovieFromId(this.id).subscribe((movie) => {
+        this.route.paramMap
+            .pipe(map(paramMap => {
+                this.id = paramMap.get('id')
+                return this.movieService.getMovieFromId(this.id)
+            }), mergeAll(), takeUntil(this.destroy$))
+            .subscribe(movie => {
                 this.movie = movie;
                 this.movie[0].views = this.numberWithCommas(this.movie[0].views);
                 this.getListStar(this.movie[0].rate);
                 this.getFavorite();
-                // console.log(this.movie[0].rate_vote)
-                // this.movie[0].rate_vote = this.numberWithCommas(this.movie[0].rate_vote);
-                // console.log(movie);
                 if (this.movie[0]['vice_name_image'][0] == '') {
                     this.background = "https://xemphimplus.net/assets/theme/v1/img/default-cover.webp";
                 } else {
                     this.background = this.movie[0]['vice_name_image'][0];
+                    const category = this.movie[0].release_year;
                 }
-                // console.log(this.background);
-                const category = this.movie[0].release_year;
-                // console.log(id);
-                this.movieService
-                    .getMovieFromCategory(category)
-                    .subscribe((category) => {
-                        for (var i = 0; i < Object.keys(category).length; i++) {
-                            if (category[i].id == this.id) {
-                                continue;
-                            } else {
-                                this.movies.push(category[i]);
-                            }
-                        }
-                    });
-            });
-
-            window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
-        })
+            })
     }
 
     getListStar(rate) {

@@ -8,7 +8,10 @@ import { HttpClient } from '@angular/common/http';
 import { StateService } from '../../../service/state.service';
 
 import { User } from 'src/movieModel/userModel';
-
+import * as userSelector from './../../../state/selectors/user.selectors';
+import { Subject } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-profile',
@@ -27,6 +30,7 @@ export class ProfileComponent implements OnInit {
 
     listFriend = [];
     listGroup = [];
+    destroy$: Subject<boolean> = new Subject<boolean>();
     constructor(
         private movieService: MovieService,
         private reduxService: StateService,
@@ -35,27 +39,25 @@ export class ProfileComponent implements OnInit {
         private router: Router,
         private http: HttpClient,
         public fb: FormBuilder,
+        private store: Store,
     ) {
-        this.getFavorite();
+        this.store.select(userSelector.userInfor).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(data => {
+            this.user = data;
+            this.avatar = data.avatar;
+            this.mainForm();
+        });
+    }
+
+    ngOnDestroy() {
+        this.destroy$.unsubscribe();
     }
 
     ngOnInit() {
 
     }
     files: File[] = [];
-
-    getFavorite() {
-        this.dataService.getUser().subscribe((dataUser) => {
-            if (dataUser['loggedIn']) {
-                this.user = dataUser['user'];
-                this.avatar = this.user.avatar;
-                this.mainForm();
-            } else {
-                this.router.navigateByUrl('/login');
-            }
-        });
-    }
-
 
     selectImage(event) {
         this.files = [];
@@ -111,20 +113,20 @@ export class ProfileComponent implements OnInit {
         });
     }
 
-    changePassword() {
-        if (window.confirm('Are you sure?')) {
-            this.movieService.updateUser(this.user.id, { password: this.inforUser.value.newPassword })
-                .subscribe(res => {
-                    this.getFavorite();
-                    this.messenger = 'Thay đổi mật khẩu thành công!';
-                    this.success = true;
-                    setTimeout(() => {
-                        this.success = false;
-                    }, 2000);
-                }, (error) => {
-                    console.log(error)
-                })
-        }
-    }
+    // changePassword() {
+    //     if (window.confirm('Are you sure?')) {
+    //         this.movieService.updateUser(this.user.id, { password: this.inforUser.value.newPassword })
+    //             .subscribe(res => {
+    //                 this.getFavorite();
+    //                 this.messenger = 'Thay đổi mật khẩu thành công!';
+    //                 this.success = true;
+    //                 setTimeout(() => {
+    //                     this.success = false;
+    //                 }, 2000);
+    //             }, (error) => {
+    //                 console.log(error)
+    //             })
+    //     }
+    // }
 
 }

@@ -10,7 +10,7 @@
                         <li class="header__nav-item">
                             Thể Loại
                             <ul class="header__nav-item-list">
-                                <li *ngFor="let category of category$ | async">
+                                <li *ngFor="let category of category$">
                                     <a routerLink="/movietype/{{category.name}}">{{category.name}}</a>
                                 </li>
                             </ul>
@@ -18,7 +18,7 @@
                         <li class="header__nav-item">
                             Quốc Gia
                             <ul class="header__nav-item-list">
-                                <li *ngFor="let country of country$ | async">
+                                <li *ngFor="let country of country$">
                                     <a routerLink="/movietype/{{country.name}}">{{country.name}}</a>
                                 </li>
                             </ul>
@@ -48,7 +48,7 @@
                         <a routerLink="/search/{{movieName}}" (click)="close()" title="search"><i
                                 class="fa fa-search"></i></a>
                     </div>
-                    <!-- <div class="form-movie" *ngIf="toggle" (click)="close()">
+                    <div class="form-movie" *ngIf="toggle" (click)="close()">
                         <a routerLink="/detailmovie/{{movie.id}}" class="list-movie" *ngFor="let movie of phimle">
                             <div class="flexbox-start-start item-list-movie" title="Nhất Dạ Tân Nương">
                                 <div class="left">
@@ -57,14 +57,14 @@
                                 <div class="right">
                                     <p class="name">{{movie.name}}</p>
                                     <p class="real-name">{{movie.real_name}}</p>
-                                    <p class="country">Hàn Quốc</p>
+                                    <p class="country">{{movie.country}}</p>
                                     <p class="whitecolor"><i class="fa fa-eye marl-5 marr-5"></i>{{movie.views}}
                                         views
                                     </p>
                                 </div>
                             </div>
                         </a>
-                    </div> -->
+                    </div>
                     <div class="form-movie" *ngIf='toggleForm' (click)="close()">
                         <a routerLink="/detailmovie/{{movie.id}}" class="list-movie" *ngFor="let movie of phimle">
                             <div class="flexbox-start-start item-list-movie" title={{movie.name}}>
@@ -83,19 +83,18 @@
                         </a>
                     </div>
                     <div class="header__auth-noti"><i class="fas fa-bell"></i></div>
-
-                    <div class="header__auth-user" *ngIf="!(userInfor$ | async)" (click)="FormLogin()">
+                    <div class="header__auth-user" *ngIf="!userInfor$" (click)="FormLogin()">
                         <div class="loggin flexbox-center-center">Loggin</div>
                     </div>
 
-                    <div class="header__auth-user relative" *ngIf="(userInfor$ | async)">
+                    <div class="header__auth-user relative" *ngIf="userInfor$">
                         <div mat-raised-button class="loggin" (click)="formUser()">
-                            <img class="avatar" src="{{(userInfor$ | async).avatar}}">
-                            {{(userInfor$ | async).name}}
+                            <img class="avatar" src="{{userInfor$.avatar}}">
+                            {{userInfor$.name}}
                         </div>
                         <div class="account" *ngIf="statusFormUser">
                             <div class="flexbox-center-center">
-                                <a class="profile" *ngIf="(userInfor$ | async).name == 'Lê Quyết Anh'" (click)="formUser()"
+                                <a class="profile" *ngIf="userInfor$.name == 'Lê Quyết Anh'" (click)="formUser()"
                                     routerLink="/admin">
                                     <i class="fas fa-user-shield"></i>Admin
                                 </a>

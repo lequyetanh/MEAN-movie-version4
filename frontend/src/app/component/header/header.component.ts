@@ -14,8 +14,10 @@ import { Country } from './../../../movieModel/countryModel'
 import { Category } from './../../../movieModel/categoryModel';
 
 import { Store } from '@ngrx/store';
+import { takeUntil } from 'rxjs/operators';
 import { getUserFromToken, getUserFromTokenFailure } from './../../state/actions/user.actions';
 import { getAllCategory } from 'src/app/state/actions/app.actions';
+import { Subject } from 'rxjs';
 
 import * as appSelector from './../../state/selectors/app.selectors';
 import * as userSelector from './../../state/selectors/user.selectors';
@@ -27,7 +29,7 @@ import { getAllCountry } from './../../state/actions/app.actions';
 })
 export class HeaderComponent implements OnInit {
     userName: string;
-    avatar:  string;
+    avatar: string;
 
     loggedIn: boolean;
     error: string;
@@ -43,12 +45,13 @@ export class HeaderComponent implements OnInit {
     statusFormUser: boolean = false;
     statusSideNav: boolean = false;
     phimle: Movie[];
+    destroy$: Subject<boolean> = new Subject<boolean>();
 
     toggleForm: boolean;
 
     userInfor$: Observable<any>;
     category$: Observable<Category>
-    country$: Observable<Country>
+    country$: Array<Country>;
     userName$: Observable<String>
 
     constructor(
@@ -60,21 +63,38 @@ export class HeaderComponent implements OnInit {
         private router: Router,
         public translateService: TranslateService,
         private movieService: MovieService,
-
         private store: Store,
     ) {
-
         this.store.dispatch(getUserFromToken());
         this.store.dispatch(getAllCategory());
         this.store.dispatch(getAllCountry());
 
-        this.userInfor$ = this.store.select(userSelector.userInfor)
-        this.category$ = this.store.select(appSelector.allCategory)
-        this.country$ = this.store.select(appSelector.allCountry)
+        this.store.select(userSelector.userInfor).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(data => {
+            this.userInfor$ = data;
+        });
 
-        this.userInfor$ = this.store.select(userSelector.userInfor)
-        this.userName$ = this.userInfor$['name']
-        console.log(this.userName$)
+        this.store.select(appSelector.allCategory).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(data => {
+            this.category$ = data;
+        })
+
+        this.store.select(appSelector.allCountry).pipe(
+            // map(country => country),
+            takeUntil(this.destroy$)
+        ).subscribe(data => {
+            this.country$ = data;
+            // console.log(data)
+        })
+
+        // this.userInfor$ = this.store.select(userSelector.userInfor)
+        // this.userName$ = this.userInfor$.pipe(map(u => {
+        //     console.log(u);
+        //     return u.name
+        // }))
+        // console.log(this.userName$)
     }
 
     get10Moviele(): void {
@@ -85,6 +105,11 @@ export class HeaderComponent implements OnInit {
 
     ngOnChanges() {
 
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 
     @HostListener("window:scroll", ["$event"]) scrollHandler(event) {
