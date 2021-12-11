@@ -131,3 +131,28 @@ export const ApplicationSettingReducer = createReducer(
         error: result.message
     }))
 )
+
+export const getMovieFromTypeFeatureKey = 'getMovieFromTypeReducer';
+export const getMovieFromTypeState: ApplicationInterface.GetMovieFromId = {
+    movie: null,
+    loading: false,
+    error: null,
+}
+
+export const MovieFromTypeReducer = createReducer(
+    getMovieFromTypeState,
+    on(appActions.getMovieFromType, (state, result) => ({
+        ...state,
+        loading: true,
+    })),
+    on(appActions.getMovieFromTypeSuccess, (state, result) => ({
+        ...state,
+        movie: result.movie,
+        loading: false,
+    })),
+    on(appActions.getMovieFromTypeFailure, (state, result) => ({
+        ...state,
+        loading: false,
+        error: result.message
+    }))
+)

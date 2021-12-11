@@ -5,6 +5,13 @@ import { NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from "../../../service/data.service";
 
+import * as appSelector from './../../../state/selectors/app.selectors';
+import * as ApplicationAction from './../../../state/actions/app.actions';
+import * as userSelector from './../../../state/selectors/user.selectors';
+import { Subject } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { mergeMap, takeUntil, map, mergeAll } from 'rxjs/operators';
+
 @Component({
     selector: "app-collection",
     templateUrl: "./collection.component.html",
@@ -16,6 +23,7 @@ export class CollectionComponent implements OnInit {
     user: any;
     statusFormMessenger:boolean = false;
     messenger: string;
+    destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private movieService: MovieService,
@@ -23,21 +31,22 @@ export class CollectionComponent implements OnInit {
         private dataService: DataService,
         private router: Router,
         private ngZone: NgZone,
+        private store: Store,
     ) {
         window.scrollTo({ left: 0, top: 0 });
+        this.store.select(userSelector.userInfor).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(data => {
+            this.user = data;
+        });
+    }
 
+    ngOnDestroy() {
+        this.destroy$.unsubscribe();
     }
 
     ngOnInit() {
-        this.dataService.getUser().subscribe((loggedIn) => {
-            // console.log(loggedIn);
-            this.loggedIn = loggedIn['loggedIn'];
-            if (this.loggedIn == false) {
-                this.router.navigateByUrl('/movie');
-            } else {
-                this.user = loggedIn['user'];
-            }
-        });
+
     }
 
     removeFavorite(movie: any, e): void {

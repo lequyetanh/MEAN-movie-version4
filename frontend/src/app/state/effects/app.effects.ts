@@ -78,4 +78,20 @@ export class AppEffects {
                 )
             )
     )
+
+    movieFromGenre$ = createEffect(() =>
+        this.actions$.
+            pipe(
+                ofType(appActions.getMovieFromType),
+                exhaustMap((action) =>
+                    this.movieServie.getMovieFromType(action.genre).pipe(
+                        // map(response => {
+                        // console.log(response);
+                        map(response => appActions.getMovieFromTypeSuccess({ movie: response })),  //gọi đến hành động login success
+                        // }),  //gọi đến hành động login success
+                        catchError((error: any) => of(appActions.getMovieFromTypeFailure(error)))
+                    )
+                )
+            )
+    )
 }

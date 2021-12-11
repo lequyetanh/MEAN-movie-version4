@@ -17,6 +17,10 @@ export const GET_MOVIE_FROM_ID = '[Get Movie From Id Page] Get Movie From Id';
 export const GET_MOVIE_FROM_ID_SUCCESS = '[Get Movie From Id Page] Get Movie From Id Success';
 export const GET_MOVIE_FROM_ID_FAILURE = '[Get Movie From Id Page] Get Movie From Id Failure';
 
+export const GET_MOVIE_FROM_TYPE = '[Get Movie From Type Page] Get Movie From Type';
+export const GET_MOVIE_FROM_TYPE_SUCCESS = '[Get Movie From Type Page] Get Movie From Type Success';
+export const GET_MOVIE_FROM_TYPE_FAILURE = '[Get Movie From Type Page] Get Movie From Type Failure';
+
 
 export const getAllMovie = createAction(
     GET_ALL_MOVIE,
@@ -73,5 +77,20 @@ export const getMovieFromIdSuccess = createAction(
 
 export const getMovieFromIdFailure = createAction(
     GET_MOVIE_FROM_ID_FAILURE,
+    props<{ message: string }>()
+)
+
+export const getMovieFromType = createAction(
+    GET_MOVIE_FROM_TYPE,
+    props<{ genre: string }>()
+);
+
+export const getMovieFromTypeSuccess = createAction(
+    GET_MOVIE_FROM_TYPE_SUCCESS,
+    props<{movie: any}>()
+)
+
+export const getMovieFromTypeFailure = createAction(
+    GET_MOVIE_FROM_TYPE_FAILURE,
     props<{ message: string }>()
 )

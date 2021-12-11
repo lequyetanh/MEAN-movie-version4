@@ -11,6 +11,7 @@ import * as fromApp from './reducers/app.reducers';
         StoreModule.forFeature(fromApp.getAllMovieFeatureKey, fromApp.AllMovieReducer),
         StoreModule.forFeature(fromApp.getMovieFromIdFeatureKey, fromApp.MovieFromIdReducer),
         StoreModule.forFeature(fromApp.applicationSettingFeatureKey, fromApp.ApplicationSettingReducer),
+        StoreModule.forFeature(fromApp.getMovieFromTypeFeatureKey, fromApp.MovieFromTypeReducer),
         EffectsModule.forFeature([AppEffects])
     ]
 })

@@ -46,8 +46,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         route: Route,
         segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
         return this.store.select(userSelector.userInfor).pipe(map(user => {
-            // console.log(user);
-            if (!!user) {
+            console.log(user);
+            if (!!user.name) {
                 return true;
             } else {
                 return false;

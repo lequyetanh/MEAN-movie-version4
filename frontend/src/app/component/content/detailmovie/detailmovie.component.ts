@@ -63,6 +63,7 @@ export class DetailmovieComponent implements OnInit {
         this.store.select(userSelector.userInfor).pipe(
             takeUntil(this.destroy$)
         ).subscribe(data => {
+            this.loggedIn = true;
             this.user = data;
             this.getFavorite();
         });
